@@ -15,8 +15,10 @@ import org.tang.exam.rest.RequestController;
 import org.tang.exam.utils.PushUtils;
 import org.tang.exam.view.BadgeView;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -83,7 +86,6 @@ public class MainActivity extends BaseActionBarFragmentActivity implements OnPag
 		String action = intent.getAction();
 		if(intent!=null && intent.getExtras()!=null && intent.getExtras().getSerializable(PushUtils.EXTRA_MESSAGE)!=null){
 			Log.d(TAG, (String) intent.getExtras().getSerializable(PushUtils.EXTRA_MESSAGE));
-//			String message = (String) intent.getExtras().getSerializable(PushUtils.EXTRA_MESSAGE);
 			
 			 pushUserId = (String)intent.getExtras().getSerializable("pushUserId"); 
 			 pushChannelId = intent.getStringExtra("pushChannelId");
@@ -189,6 +191,7 @@ public class MainActivity extends BaseActionBarFragmentActivity implements OnPag
 		super.onDestroy();
 	}
 	
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
@@ -197,16 +200,41 @@ public class MainActivity extends BaseActionBarFragmentActivity implements OnPag
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-//		switch (item.getItemId()) {
-//		case R.id.action_exit:
-//			if (mReceiver != null) {
-//				unregisterReceiver(mReceiver);
-//			}
-//			this.finish();
-//			break;
-//		}
 		return false;
 	}
+	
+	@Override  
+    public boolean onKeyDown(int keyCode, KeyEvent event) {  
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {  
+            // return true;//返回真表示返回键被屏蔽掉  
+            creatDialog();// 创建弹出的Dialog  
+        }  
+        return super.onKeyDown(keyCode, event);  
+    }  
+	
+	 /** 
+     * 弹出提示退出对话框 
+     */  
+    private void creatDialog() {  
+        new AlertDialog.Builder(this)  
+                .setMessage("确定退出?")  
+                .setPositiveButton("是",  
+                        new DialogInterface.OnClickListener() {  
+                            @Override  
+                            public void onClick(DialogInterface dialog,  
+                                    int which) {  
+                            	MyApplication.getInstance().exit(); 
+                            }  
+                        })  
+                .setNegativeButton("否", new DialogInterface.OnClickListener() {  
+  
+                    @Override  
+                    public void onClick(DialogInterface dialog, int which) {  
+                        dialog.dismiss();  
+                    }  
+                }).show();  
+    }  
+	
 
 	private void initTabWidget() {
 		mIndexView = (RelativeLayout) findViewById(R.id.bottombar_index);

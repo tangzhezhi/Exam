@@ -17,11 +17,24 @@ import java.util.Locale;
 import java.util.Map;  
 import java.util.Set;  
   
+
+
+
+
 import org.json.JSONArray;  
 import org.json.JSONException;  
 import org.json.JSONObject;  
 import org.json.JSONStringer;  
   
+
+
+
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import android.util.Log;  
   
   
@@ -360,7 +373,7 @@ public class JSONHelper {
         }  
         return obj;  
     }  
-  
+    
       
     /** 
      * 反序列化简单对象 
@@ -775,5 +788,21 @@ public class JSONHelper {
     public static boolean isList(Class<?> clazz) {  
         return clazz != null && List.class.isAssignableFrom(clazz);  
     }  
+    
+    
+    public static boolean isGoodJson(String json) {
+        if (null==json||("").equals(json)) {
+            return false;
+        }
+        try {
+            JsonParser jsonParser = new JsonParser();
+            JsonElement jsonElement =  jsonParser.parse(json);
+            return jsonElement.isJsonObject();
+        } catch (JsonSyntaxException e) {
+            System.out.println("exception"+e);
+        }
+
+        return false;
+    }
       
 }  

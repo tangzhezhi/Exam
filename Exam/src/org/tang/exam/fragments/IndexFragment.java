@@ -3,7 +3,7 @@ package org.tang.exam.fragments;
 import org.tang.exam.R;
 import org.tang.exam.activity.AttendanceActivity;
 import org.tang.exam.activity.AttendanceGdActivity;
-import org.tang.exam.activity.MapActivity;
+import org.tang.exam.activity.NoticeActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +21,7 @@ import android.widget.RelativeLayout;
  */
 public class IndexFragment extends Fragment implements OnClickListener {
 	private RelativeLayout layoutAttendance;
-	private RelativeLayout layoutMap;
+	private RelativeLayout layoutNotice;
 	private View mView;
 
 	public static IndexFragment newInstance() {
@@ -49,9 +49,9 @@ public class IndexFragment extends Fragment implements OnClickListener {
 	 */
 	private void initView() {
 		layoutAttendance = (RelativeLayout) mView.findViewById(R.id.layout_attendance);
-		layoutMap = (RelativeLayout) mView.findViewById(R.id.layout_map);
+		layoutNotice = (RelativeLayout) mView.findViewById(R.id.layout_notice);
 		layoutAttendance.setOnClickListener(this);
-		layoutMap.setOnClickListener(this);
+		layoutNotice.setOnClickListener(this);
 	}
 	
 	/**
@@ -63,16 +63,16 @@ public class IndexFragment extends Fragment implements OnClickListener {
 		case R.id.layout_attendance:
 			onAttendanceClick();
 			break;
-		case R.id.layout_map:
-			onMapClick();
+		case R.id.layout_notice:
+			onNoticeClick();
 			break;
 		}
 	}
 
 
 
-	private void onMapClick() {
-		Intent intent = new Intent(getActivity(),MapActivity.class);
+	private void onNoticeClick() {
+		Intent intent = new Intent(getActivity(),NoticeActivity.class);
 		startActivity(intent);
 	}
 

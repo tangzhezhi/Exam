@@ -18,6 +18,12 @@ public class DateTimeUtil {
 		return result;
 	}
 	
+	public static String getShortTime() {
+		Date curDate = new Date(System.currentTimeMillis());
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		return sdf.format(curDate);
+	}
+	
 	public static String getLongTime() {
 		Date curDate = new Date(System.currentTimeMillis());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmssSSS");

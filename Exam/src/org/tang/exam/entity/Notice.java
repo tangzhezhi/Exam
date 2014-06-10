@@ -4,11 +4,11 @@ import java.io.Serializable;
 
 public class Notice implements Serializable {  
 	private static final long serialVersionUID = -5680755381452484527L;
-	
+	private String id;
+	private String orgId;
 	private String authorId;
 	private String authorName;
-	private int type;
-	private String objectId;
+	private String type;
 	private String title;
 	private String content;
 	private String createTime;
@@ -29,20 +29,12 @@ public class Notice implements Serializable {
 		this.authorName = authorName;
 	}
 
-	public int getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(int type) {
+	public void setType(String type) {
 		this.type = type;
-	}
-
-	public String getObjectId() {
-		return objectId;
-	}
-
-	public void setObjectId(String objectId) {
-		this.objectId = objectId;
 	}
 
 	public String getTitle() {
@@ -68,4 +60,21 @@ public class Notice implements Serializable {
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
+	}
+	
 }

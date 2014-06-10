@@ -51,19 +51,19 @@
                     android:visibility="gone" />
 				
                   <RelativeLayout
-                    android:id="@+id/layout_map"
+                    android:id="@+id/layout_notice"
                     style="@style/ListItem"
                     android:visibility="visible" >
 
                     <ImageView
-                        android:id="@+id/iv_map"
+                        android:id="@+id/iv_notice"
                         style="@style/ListItemIcon"
-                        android:src="@drawable/index_attendance" />
+                        android:src="@drawable/index_notice" />
 
                     <TextView
                         style="@style/ListItemText"
-                        android:layout_toRightOf="@id/iv_map"
-                        android:text="@string/map" />
+                        android:layout_toRightOf="@id/iv_notice"
+                        android:text="@string/notice" />
 
                     <ImageView style="@style/ListItemArrow" />
                 </RelativeLayout>

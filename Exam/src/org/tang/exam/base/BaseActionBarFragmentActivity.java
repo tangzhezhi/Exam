@@ -8,6 +8,7 @@ public class BaseActionBarFragmentActivity extends ActionBarActivity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyApplication.getInstance().addActivity(BaseActionBarFragmentActivity.this);  
         Thread.setDefaultUncaughtExceptionHandler(new MyCustomExceptionHandler(this));
     }
 

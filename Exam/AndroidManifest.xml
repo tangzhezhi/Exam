@@ -104,7 +104,16 @@
           android:screenOrientation="sensor"  
           android:configChanges="orientation|keyboardHidden">  
 		</activity> 
+		
+       <activity android:name="org.tang.exam.activity.NoticeActivity"  
+          android:launchMode="singleTask"
+          android:screenOrientation="portrait">  
+		</activity> 
         
+        <activity android:name="org.tang.exam.activity.PostNoticeActivity"  
+          android:launchMode="singleTask"
+          android:screenOrientation="portrait">  
+		</activity> 
         
         <receiver android:name="org.tang.exam.service.PushMessageReceiver">
             <intent-filter>

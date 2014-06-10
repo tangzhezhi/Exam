@@ -40,6 +40,8 @@ public class PushUtils {
 	    public static final String ACTION_UNREAD_COUNT = "org.tang.exam.service.PushMessageReceiver.unreadCount"; 
 	    public static final String ACTION_UPDATE_COUNT = "org.tang.exam.service.PushMessageReceiver.updateCount"; 
 	    
+	    public static final String ACTION_NOTIFICATION_ORG_ENTRY = "notification_org_entry";
+	    
 	    
 	    public static String logStringCache = "";
 

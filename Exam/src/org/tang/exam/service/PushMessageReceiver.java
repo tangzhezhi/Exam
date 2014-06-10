@@ -7,24 +7,38 @@ import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.tang.exam.R;
 import org.tang.exam.activity.ChatActivity;
 import org.tang.exam.activity.MainActivity;
+import org.tang.exam.activity.NoticeActivity;
+import org.tang.exam.activity.PostNoticeActivity;
 import org.tang.exam.common.AppConfig;
+import org.tang.exam.common.AppConstant;
+import org.tang.exam.common.AppConstant.NoticeType;
 import org.tang.exam.db.ChatMsgDBAdapter;
+import org.tang.exam.db.NoticeDBAdapter;
 import org.tang.exam.entity.ChatMsgEntity;
+import org.tang.exam.entity.Notice;
 import org.tang.exam.rest.push.ChatMsgDTO;
+import org.tang.exam.utils.DateTimeUtil;
+import org.tang.exam.utils.MessageBox;
 import org.tang.exam.utils.PushUtils;
 
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 
@@ -128,24 +142,35 @@ public class PushMessageReceiver extends FrontiaPushMessageReceiver {
         String messageString = "透传消息 message=\"" + message
                 + "\" customContentString=" + customContentString;
         Log.d(TAG, messageString);
-//    	Gson gson = new Gson();
-//        ChatMsgDTO c = gson.fromJson(message, new TypeToken<ChatMsgDTO>() {}.getType());
         
-        // 自定义内容获取方式，mykey和myvalue对应透传消息推送时自定义内容中设置的键和值
-//        if (!TextUtils.isEmpty(customContentString)) {
-//            JSONObject customJson = null;
-//            try {
-//                customJson = new JSONObject(customContentString);
-//                String myvalue = null;
-//                if (customJson.isNull("mykey")) {
-//                    myvalue = customJson.getString("mykey");
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
-        receivePushContent(context, message);
+        try {
+			JSONObject rootObj = new JSONObject(message);
+			if(rootObj.getString("sessionKey")!=null && !rootObj.getString("sessionKey").equals("")){
+				if(AppConstant.notice_msg==rootObj.getInt("msgFlag")){
+			        try {
+			        	receivePushNoticeContent(context, rootObj.getString("response"));
+					} catch (JsonSyntaxException e) {
+						Log.e(TAG, "解析消息异常：："+e);
+						e.printStackTrace();
+					}
+					
+				}
+				else if(AppConstant.chat_msg==rootObj.getInt("msgFlag")){
+			        try {
+			        	receivePushContent(context, rootObj.getString("response"));
+					} catch (JsonSyntaxException e) {
+						Log.e(TAG, "解析消息异常：："+e);
+						e.printStackTrace();
+					}
+				}
+				
+			}
+			
+		} catch (JSONException e1) {
+			Log.e(TAG, "解析消息异常：："+e1);
+			e1.printStackTrace();
+		}
+        
     }
 
     /**
@@ -358,6 +383,57 @@ public class PushMessageReceiver extends FrontiaPushMessageReceiver {
        
     }
     
+    
+    private void receivePushNoticeContent(Context context, String contentmsg) {
+    	Gson gson = new Gson();
+    	Notice notice = gson.fromJson(contentmsg, new TypeToken<Notice>() {}.getType());
+    	
+		ArrayList<Notice> alist = new ArrayList<Notice>();
+		alist.add(notice);
+		NoticeDBAdapter dbAdapter = new NoticeDBAdapter();
+		try {
+			dbAdapter.open();
+			dbAdapter.addServiceNotice(alist);
+		} catch (Exception e) {
+			Log.e(TAG, "Failed to operate database: " + e);
+		} finally {
+			dbAdapter.close();
+		}
+    	
+    	
+    	String content = "您收到" +1 + "条公告："+notice.getContent();
+
+		NotificationManager manager = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+		Notification notification = new Notification();
+		notification.icon = org.tang.exam.R.drawable.notification_icon;
+		notification.tickerText = "收到新消息";
+		notification.when = System.currentTimeMillis();
+
+		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		notification.defaults = Notification.DEFAULT_SOUND;
+
+		Intent contentIntent = new Intent(context, NoticeActivity.class);
+		if(String.valueOf(NoticeType.SYSTEM).equals(notice.getType())){
+			contentIntent.setAction(PushUtils.ACTION_NOTIFICATION_ENTRY);
+		}
+		else{
+			contentIntent.setAction(PushUtils.ACTION_NOTIFICATION_ORG_ENTRY);
+		}
+		
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, contentIntent, 0);
+
+		notification.contentIntent = pendingIntent;
+		notification.contentView = new RemoteViews(context.getPackageName(),
+				R.layout.notification_custom_builder);
+		notification.contentView.setImageViewResource(R.id.notification_icon, R.drawable.icon);
+		notification.contentView.setTextViewText(R.id.notification_title, "移动考勤");
+		notification.contentView.setTextViewText(R.id.notification_content, content);
+		notification.contentView.setTextViewText(R.id.notification_time, DateTimeUtil.getShortTime());
+
+		manager.notify(AppConstant.INTERNAL_MESSAGE_ID, notification);
+		
+    }
     
     
 }

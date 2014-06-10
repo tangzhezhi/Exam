@@ -8,6 +8,7 @@ public class BaseActionBarActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyApplication.getInstance().addActivity(BaseActionBarActivity.this);  
         Thread.setDefaultUncaughtExceptionHandler(new MyCustomExceptionHandler(this));
     }
 

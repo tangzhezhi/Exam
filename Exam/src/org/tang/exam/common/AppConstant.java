@@ -2,10 +2,12 @@ package org.tang.exam.common;
 
 public class AppConstant {
 //	public static final String BASE_URL = "http://113.247.250.200:11111/springmvc/";
-//	public static final String BASE_URL = "http://192.168.2.116:11111/springmvc/";
-	public static final String BASE_URL = "http://192.168.1.103:8080/springmvc/";
+	public static final String BASE_URL = "http://192.168.2.116:11111/springmvc/";
+//	public static final String BASE_URL = "http://192.168.1.103:8080/springmvc/";
 	public static final int DEFAULT_PAGESIZE = 15;
-
+	
+	public static final int INTERNAL_MESSAGE_ID = 2;
+	
 	public static final class UserType {
 		public static final int SYSTEM = 0;
 		public static final int STUDENT = 1;
@@ -31,8 +33,8 @@ public class AppConstant {
 	}
 	
 	public static final class NoticeType {
-		public static final int SCHOOL = 1;
-		public static final int CLASS= 2;
+		public static final int SYSTEM = 1;
+		public static final int ORG= 2;
 	}
 	
 	public static final class HomeworkQueryType {
@@ -92,5 +94,17 @@ public class AppConstant {
 	public static final int chat_msg_send_success = 1006; 
 	
 	public static final int chat_msg_send_fail = 8006; 
+	
+	public static final int notice_query_success = 1007; 
+	
+	public static final int notice_query_fail = 8007; 
+	
+	public static final int notice_add_success = 1008; 
+	
+	public static final int notice_add_fail = 8008; 
+	
+	public static final int notice_msg = 1009; 
+	
+	public static final int chat_msg = 1010; 
 	
 }

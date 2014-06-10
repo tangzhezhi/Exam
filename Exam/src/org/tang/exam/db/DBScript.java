@@ -5,14 +5,14 @@ public final class DBScript {
 	public static final String CREATE_TABLE_NOTICE = 
     		"CREATE TABLE Notice " + 
             "( " + 
-            	"cacheUserId text not null, " +
-                "authorId text not null, " + 
-                "authorName text not null, " + 
-                "type integer not null, " + 
-                "objectId text not null, " +
-                "title text not null, " +
-                "content text not null, " +
-                "createTime text not null " +
+            	"id text not null primary key , " +
+            	"orgId text , " + 
+                "authorId text, " + 
+                "authorName text , " + 
+                "type text , " + 
+                "title text , " +
+                "content text , " +
+                "createTime text  " +
             "); ";
    
     public static final String CREATE_TABLE_HOMEWORK = 
