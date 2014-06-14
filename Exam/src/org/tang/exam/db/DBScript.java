@@ -171,6 +171,22 @@ public final class DBScript {
             "); ";
     
     
+  	public static final String CREATE_TABLE_VIDEO = 
+      		"CREATE TABLE Video " + 
+              "( " + 
+      				"videoid text not null ,"+
+      				"videoname text  ,"+
+      				"videourl text ,"+
+      				"userid text  ,"+
+      				"createtime text  ,"+
+      				"clicknum text  ,"+
+      				"videoduration text  ,"+
+      				"videorecommend text  ,"+
+      				"videosubject text ,"+
+      				"videotime text  ,"+
+      				"videopic text  "+
+              "); ";
+    
     public static final String DROP_TABLE_NOTICE = "DROP TABLE IF EXISTS Notice; ";
     public static final String DROP_TABLE_HOMEWORK = "DROP TABLE IF EXISTS Homework; ";
     public static final String DROP_TABLE_DAILY = "DROP TABLE IF EXISTS Daily; ";
@@ -183,4 +199,5 @@ public final class DBScript {
     public static final String DROP_TABLE_ATTENDANCE_GRAPH = "DROP TABLE IF EXISTS AttendanceGraph; ";
     public static final String DROP_TABLE_USERINFO = "DROP TABLE IF EXISTS userinfo; ";
     public static final String DROP_TABLE_CHATMSG  = "DROP TABLE IF EXISTS ChatMsg; ";
+    public static final String DROP_TABLE_Video= "DROP TABLE IF EXISTS Video; ";
 }

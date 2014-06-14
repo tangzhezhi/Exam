@@ -14,6 +14,7 @@
     <string name="title_index">首页</string>
     <string name="title_message">消息</string>
     <string name="title_contact">通讯录</string>
+    <string name="title_chat">聊天</string>
     <string name="title_more">更多</string>
     <string name="label_account">账号 </string>
     <string name="label_sutdent_no">学号</string>
@@ -35,7 +36,7 @@
     <string name="score">成绩信息</string>
     <string name="groupsms">家校短信</string>
     <string name="select_recv_user">请选择接收用户</string>
-    <string name="attendance">出勤记录</string>
+    <string name="attendance">考勤管理</string>
     <string name="map">出勤位置</string>
     <string name="consume">日常消费</string>
     <string name="schoolbag">电子书包</string>
@@ -74,6 +75,7 @@
     <string name="content">内容</string>
 	
     <string name="remote_attendance">签到</string>
+    <string name="remote_attendance_off">签退</string>
      <string name="attendance_camera">拍照</string>
     <string name="attendance_current_place">当前地点</string>
     <string name="attendance_note">记事</string>
@@ -87,8 +89,21 @@
     <!-- contact -->
     <string name="contact_org_people">组织人员</string>
     
+    <!-- attendance -->
+    <string name="ask_leave">请假</string>
+    <string name="evection_check_in">出差登记</string>
     
+    <!-- day_task -->
+    <string name="day_task">日常任务</string>
+    <string name="task_weekly">工作周报</string>
+    <string name="task_distribute">任务交办</string>
+    <string name="ask_fee">费用申请</string>
     
+    <!-- 客户管理-->
+    <string name="client_manager">客户管理</string>
+    <string name="visit_plan">拜访计划</string>
     
+    <!-- 视频资源 -->
+    <string name="video_resource">视频资源</string>
     
 </resources>

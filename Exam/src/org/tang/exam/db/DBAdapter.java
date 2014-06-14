@@ -91,6 +91,7 @@ public class DBAdapter {
 			
 			db.execSQL(DBScript.CREATE_TABLE_USERINFO);
 			db.execSQL(DBScript.CREATE_TABLE_CHATMSG);
+			db.execSQL(DBScript.CREATE_TABLE_VIDEO);
 			
 		}
 
@@ -111,6 +112,7 @@ public class DBAdapter {
 			db.execSQL(DBScript.DROP_TABLE_ATTENDANCE_GRAPH);
 			db.execSQL(DBScript.DROP_TABLE_USERINFO);
 			db.execSQL(DBScript.DROP_TABLE_CHATMSG);
+			db.execSQL(DBScript.DROP_TABLE_Video);
 			onCreate(db);
 		}
 	}

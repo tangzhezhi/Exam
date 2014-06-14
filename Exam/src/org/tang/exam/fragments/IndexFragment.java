@@ -1,9 +1,9 @@
 package org.tang.exam.fragments;
 
 import org.tang.exam.R;
-import org.tang.exam.activity.AttendanceActivity;
 import org.tang.exam.activity.AttendanceGdActivity;
 import org.tang.exam.activity.NoticeActivity;
+import org.tang.exam.activity.VideoActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +22,12 @@ import android.widget.RelativeLayout;
 public class IndexFragment extends Fragment implements OnClickListener {
 	private RelativeLayout layoutAttendance;
 	private RelativeLayout layoutNotice;
+	
+	private RelativeLayout layoutDayTask;
+	private RelativeLayout layoutClientManager;
+	
+	private RelativeLayout layoutVideo;
+	
 	private View mView;
 
 	public static IndexFragment newInstance() {
@@ -50,8 +56,19 @@ public class IndexFragment extends Fragment implements OnClickListener {
 	private void initView() {
 		layoutAttendance = (RelativeLayout) mView.findViewById(R.id.layout_attendance);
 		layoutNotice = (RelativeLayout) mView.findViewById(R.id.layout_notice);
+		
+		layoutDayTask = (RelativeLayout) mView.findViewById(R.id.layout_day_task);
+		layoutClientManager = (RelativeLayout) mView.findViewById(R.id.layout_client_manager);
+		
+		layoutVideo = (RelativeLayout) mView.findViewById(R.id.layout_video);
+		
 		layoutAttendance.setOnClickListener(this);
 		layoutNotice.setOnClickListener(this);
+		
+		layoutDayTask.setOnClickListener(this);
+		layoutClientManager.setOnClickListener(this);
+		
+		layoutVideo.setOnClickListener(this);
 	}
 	
 	/**
@@ -66,6 +83,16 @@ public class IndexFragment extends Fragment implements OnClickListener {
 		case R.id.layout_notice:
 			onNoticeClick();
 			break;
+		
+		case R.id.layout_day_task:
+			onDayTaskClick();
+			break;
+		case R.id.layout_client_manager:
+			onClientManagerClick();
+			break;
+		case R.id.layout_video:
+			onVideoClick();
+			break;
 		}
 	}
 
@@ -78,6 +105,21 @@ public class IndexFragment extends Fragment implements OnClickListener {
 
 	private void onAttendanceClick() {
 		Intent intent = new Intent(getActivity(), AttendanceGdActivity.class);
+		startActivity(intent);
+	}
+	
+	private void onDayTaskClick() {
+		Intent intent = new Intent(getActivity(),NoticeActivity.class);
+		startActivity(intent);
+	}
+
+	private void onClientManagerClick() {
+		Intent intent = new Intent(getActivity(), AttendanceGdActivity.class);
+		startActivity(intent);
+	}
+	
+	private void onVideoClick() {
+		Intent intent = new Intent(getActivity(), VideoActivity.class);
 		startActivity(intent);
 	}
 

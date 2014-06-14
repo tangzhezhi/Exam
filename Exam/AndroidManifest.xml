@@ -115,6 +115,24 @@
           android:screenOrientation="portrait">  
 		</activity> 
         
+        <activity android:name="org.tang.exam.activity.VideoActivity"  
+          android:launchMode="singleTask"
+          android:screenOrientation="portrait">  
+		</activity> 
+        
+        <activity android:name="org.tang.exam.activity.PlayVideoActivity"  
+          android:launchMode="singleTask"
+          android:screenOrientation="landscape"  
+          android:configChanges="orientation|keyboardHidden">  
+		</activity> 
+        
+         <activity
+           android:name="io.vov.vitamio.activity.InitActivity"
+           android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+           android:launchMode="singleTop"
+           android:theme="@android:style/Theme.NoTitleBar"
+           android:windowSoftInputMode="stateAlwaysHidden" />
+        
         <receiver android:name="org.tang.exam.service.PushMessageReceiver">
             <intent-filter>
                 <!-- 接收push消息 -->

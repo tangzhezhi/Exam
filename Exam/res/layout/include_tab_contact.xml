@@ -8,6 +8,6 @@
         android:layout_centerInParent="true"
         android:drawableTop="@drawable/ic_tab_contact"
         android:gravity="center_horizontal"
-        android:text="@string/title_contact" />
+        android:text="@string/title_chat" />
     
 </RelativeLayout>

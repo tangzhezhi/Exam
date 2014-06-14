@@ -41,6 +41,7 @@ public class PushUtils {
 	    public static final String ACTION_UPDATE_COUNT = "org.tang.exam.service.PushMessageReceiver.updateCount"; 
 	    
 	    public static final String ACTION_NOTIFICATION_ORG_ENTRY = "notification_org_entry";
+	    public static final String ACTION_NOTIFICATION_VIDEO = "notification_video_entry";
 	    
 	    
 	    public static String logStringCache = "";

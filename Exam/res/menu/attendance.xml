@@ -5,4 +5,8 @@
         android:id="@+id/action_remote_attendance"
         android:title="@string/remote_attendance"
         pushme:showAsAction="always"/>
+	 <item
+        android:id="@+id/action_remote_attendance_off"
+        android:title="@string/remote_attendance_off"
+        pushme:showAsAction="always"/> 
 </menu>

@@ -49,8 +49,8 @@
                 <View
                     style="@style/ListDivider"
                     android:visibility="gone" />
-				
-                  <RelativeLayout
+
+                <RelativeLayout
                     android:id="@+id/layout_notice"
                     style="@style/ListItem"
                     android:visibility="visible" >
@@ -64,6 +64,73 @@
                         style="@style/ListItemText"
                         android:layout_toRightOf="@id/iv_notice"
                         android:text="@string/notice" />
+
+                    <ImageView style="@style/ListItemArrow" />
+                </RelativeLayout>
+
+                <View
+                    style="@style/ListDivider"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/layout_day_task"
+                    style="@style/ListItem"
+                    android:visibility="visible" >
+
+                    <ImageView
+                        android:id="@+id/iv_day_task"
+                        style="@style/ListItemIcon"
+                        android:src="@drawable/index_notice" />
+
+                    <TextView
+                        style="@style/ListItemText"
+                        android:layout_toRightOf="@id/iv_day_task"
+                        android:text="@string/day_task" />
+
+                    <ImageView style="@style/ListItemArrow" />
+                </RelativeLayout>
+
+                <View
+                    style="@style/ListDivider"
+                    android:visibility="gone" />
+				
+                <RelativeLayout
+                    android:id="@+id/layout_client_manager"
+                    style="@style/ListItem"
+                    android:visibility="visible" >
+
+                    <ImageView
+                        android:id="@+id/iv_client_manager"
+                        style="@style/ListItemIcon"
+                        android:src="@drawable/index_notice" />
+
+                    <TextView
+                        style="@style/ListItemText"
+                        android:layout_toRightOf="@id/iv_client_manager"
+                        android:text="@string/client_manager" />
+
+                    <ImageView style="@style/ListItemArrow" />
+                </RelativeLayout>
+
+                <View
+                    style="@style/ListDivider"
+                    android:visibility="gone" />
+                
+                
+                 <RelativeLayout
+                    android:id="@+id/layout_video"
+                    style="@style/ListItem"
+                    android:visibility="visible" >
+
+                    <ImageView
+                        android:id="@+id/iv_video"
+                        style="@style/ListItemIcon"
+                        android:src="@drawable/index_notice" />
+
+                    <TextView
+                        style="@style/ListItemText"
+                        android:layout_toRightOf="@id/iv_video"
+                        android:text="@string/video_resource" />
 
                     <ImageView style="@style/ListItemArrow" />
                 </RelativeLayout>
