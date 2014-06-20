@@ -107,4 +107,38 @@ public class VideoDBAdapter extends DBAdapter {
 	}
 	
 	
+	// 查询记录的总数  
+    public int getCount() {  
+        String sql = "select count(*) from Video";  
+        Cursor c = getDb().rawQuery(sql, null);  
+        c.moveToFirst();  
+        int length = c.getInt(0);  
+        c.close();  
+        return length;  
+    }  
+	
+    
+    /** 
+     * 分页查询 
+     *  
+     * @param currentPage 当前页 
+     * @param pageSize 每页显示的记录 
+     * @return 当前页的记录 
+     */  
+    public ArrayList<Video> getAllItems(int currentPage, int pageSize) {  
+        int firstResult = (currentPage - 1) * pageSize;  
+        int maxResult = currentPage * pageSize;  
+        String sql = "select * from Video limit ?,?";  
+        Cursor mCursor = getDb().rawQuery(  
+                sql,  
+                new String[] { String.valueOf(firstResult),  
+                        String.valueOf(maxResult) });  
+        ArrayList<Video> items = new ArrayList<Video>();  
+        int columnCount  = mCursor.getColumnCount();  
+        while (mCursor.moveToNext()) {
+        	items.add(fetchVideo(mCursor));
+        }  
+        return items;  
+    } 
+	
 }

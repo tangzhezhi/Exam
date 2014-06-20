@@ -70,6 +70,12 @@ public class AppConstant {
 	}
 	
 	
+	public static final class DayTaskStatus {
+		public static final String task_weekly = "1";
+		public static final String task_distribute = "2";
+		public static final String ask_fee = "3";
+	}
+	
 	
 	public static final int login_success = 1001; 
 	
@@ -110,6 +116,10 @@ public class AppConstant {
 	public static final int video_query_success = 1011; 
 	
 	public static final int video_query_fail = 8011; 
+	
+	public static final int taskweekly_query_success = 1012; 
+	
+	public static final int taskweekly_query_fail = 8012; 
 	
 	
 }

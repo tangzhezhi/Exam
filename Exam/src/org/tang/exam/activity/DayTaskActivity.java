@@ -6,6 +6,7 @@ import org.tang.exam.base.BaseActionBarActivity;
 import org.tang.exam.fragments.AskFeeFragment;
 import org.tang.exam.fragments.NoticeOrgFragment;
 import org.tang.exam.fragments.NoticeSystemFragment;
+import org.tang.exam.fragments.TaskCurrentDayFragment;
 import org.tang.exam.fragments.TaskDistributeFragment;
 import org.tang.exam.fragments.TaskWeeklyFragment;
 
@@ -46,9 +47,10 @@ public class DayTaskActivity extends BaseActionBarActivity {
 		
 		//在导航上添加上公告页面--ViewPager
 		mTabsAdapter = new TabsAdapter(this, mViewPager);
+		mTabsAdapter.addTab(bar.newTab().setText(getString(R.string.task_current_day)), TaskCurrentDayFragment.class, null);
 		mTabsAdapter.addTab(bar.newTab().setText(getString(R.string.task_weekly)), TaskWeeklyFragment.class, null);
-		mTabsAdapter.addTab(bar.newTab().setText(getString(R.string.task_distribute)),TaskDistributeFragment.class, null);
-		mTabsAdapter.addTab(bar.newTab().setText(getString(R.string.ask_fee)), AskFeeFragment.class, null);
+//		mTabsAdapter.addTab(bar.newTab().setText(getString(R.string.task_distribute)),TaskDistributeFragment.class, null);
+//		mTabsAdapter.addTab(bar.newTab().setText(getString(R.string.ask_fee)), AskFeeFragment.class, null);
 	}
 	
 	/**

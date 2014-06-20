@@ -27,10 +27,11 @@ public class AttendanceDBAdapter extends DBAdapter {
 		if (result.moveToFirst()) {
 			do {
 				list.add(fetchAttendanceRecord(result));
+				return list;
 			} while (result.moveToNext());
 		}
-
-		return list;
+		result.close();
+		return null;
 	}
 	
 	
@@ -57,8 +58,6 @@ public class AttendanceDBAdapter extends DBAdapter {
 		}
 		return list;
 	}
-	
-	
 	
 	
 	

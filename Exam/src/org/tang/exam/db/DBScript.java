@@ -187,6 +187,26 @@ public final class DBScript {
       				"videopic text  "+
               "); ";
     
+  	
+  	public static final String CREATE_TABLE_TASKCURRENTDAY = 
+      		"CREATE TABLE TaskCurrentDay " + 
+              "( " + 
+      				"id text not null ,"+
+      				"orgId text  ,"+
+      				"authorId text ,"+
+      				"authorName text  ,"+
+      				"type text  ,"+
+      				"title text  ,"+
+      				"state text  ,"+
+      				"createTime text  ,"+
+      				"createDate text ,"+
+      				"remindType text  ,"+
+      				"remindDate text , "+
+      				"remindTime text  "+
+              "); ";
+  	
+  	
+  	
     public static final String DROP_TABLE_NOTICE = "DROP TABLE IF EXISTS Notice; ";
     public static final String DROP_TABLE_HOMEWORK = "DROP TABLE IF EXISTS Homework; ";
     public static final String DROP_TABLE_DAILY = "DROP TABLE IF EXISTS Daily; ";
@@ -200,4 +220,5 @@ public final class DBScript {
     public static final String DROP_TABLE_USERINFO = "DROP TABLE IF EXISTS userinfo; ";
     public static final String DROP_TABLE_CHATMSG  = "DROP TABLE IF EXISTS ChatMsg; ";
     public static final String DROP_TABLE_Video= "DROP TABLE IF EXISTS Video; ";
+    public static final String DROP_TABLE_TASKCURRENTDAY= "DROP TABLE IF EXISTS TaskCurrentDay; ";
 }

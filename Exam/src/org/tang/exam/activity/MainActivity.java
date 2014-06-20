@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -92,33 +93,57 @@ public class MainActivity extends BaseActionBarFragmentActivity implements OnPag
 			 handleIntent(intent);
 		}
 		
-		if (PushUtils.ACTION_LOGIN.equals(action)) {
-			// Push: 百度账号初始化，用access token绑定
-			String accessToken = intent
-					.getStringExtra(PushUtils.EXTRA_ACCESS_TOKEN);
-			PushManager.startWork(getApplicationContext(),
-					PushConstants.LOGIN_TYPE_ACCESS_TOKEN, accessToken);
-		}
-		
 	}
 	
 	
 	private void handleIntent(Intent intent) {
-		String action = intent.getAction();
-		UserCache userCache = UserCache.getInstance();
-		if (pushUserId!=null&&!pushUserId.equals("")) {
+		
+		Log.d(TAG, "推送绑定状态：："+PushUtils.hasBind(MainActivity.this));
+		
+		if(pushUserId!=null && !pushUserId.equals("")){
 			onBindSuccess(pushUserId, pushChannelId);
 		}
-		else if(pushUserId==null||pushUserId.equals("")){
-			PushManager.startWork(getApplicationContext(),
-					PushConstants.LOGIN_TYPE_API_KEY, 
-					PushUtils.getMetaValue(MainActivity.this, "api_key"));
-		}
-		else if (PushUtils.ACTION_NOTIFICATION_ENTRY.equals(action)) {
-			// 重置通知栏新消息数
-			MyApplication.getInstance().clearNewsCount();
+		else{
+			GetPushBindTask dTask = new GetPushBindTask();  
+            dTask.execute(10000L);  
+			
 		}
 	}
+	
+	
+	 class GetPushBindTask extends AsyncTask<Long, Void, String>{  
+	        //后面尖括号内分别是参数（例子里是线程休息时间），进度(publishProgress用到)，返回值 类型  
+	        @Override  
+	        protected void onPreExecute() {  
+	            //第一个执行方法  
+	            super.onPreExecute();  
+	        }  
+	          
+	        @Override  
+	        protected String doInBackground(Long... params) {  
+	        	try {
+					Thread.sleep(params[0]);
+					PushManager.startWork(getApplicationContext(),
+							PushConstants.LOGIN_TYPE_API_KEY, 
+							PushUtils.getMetaValue(MainActivity.this, "api_key"));
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}  
+	            return "";  
+	        }  
+	  
+	        @Override  
+	        protected void onProgressUpdate(Void... progress) {  
+	            super.onProgressUpdate(progress);  
+	        }  
+	  
+	        @Override  
+	        protected void onPostExecute(String result) {  
+	            super.onPostExecute(result);  
+	        }  
+	          
+	    }  
+	
 	
 	
 	private void registerMyReceiver() {
@@ -301,12 +326,12 @@ public class MainActivity extends BaseActionBarFragmentActivity implements OnPag
 
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
-		// TODO Auto-generated method stub
+		Log.d(TAG, "onPageScrollStateChanged：：：："+arg0);
 	}
 
 	@Override
 	public void onPageScrolled(int arg0, float arg1, int arg2) {
-		// TODO Auto-generated method stub
+		Log.d(TAG, "onPageScrolled：：：：：："+arg0+":::::"+arg1+":::::"+arg2);
 	}
 
 	@Override

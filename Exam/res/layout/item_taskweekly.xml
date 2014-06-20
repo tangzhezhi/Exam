@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_normal"
+    android:orientation="vertical"
+    android:padding="@dimen/normal_padding" >
+
+    <TextView
+        android:id="@+id/tv_taskweekly_create_time"
+        style="@style/TimeTipsUI" />
+
+    <LinearLayout
+        android:id="@+id/layout_taskweekly_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20.0dip"
+        android:background="@drawable/notice_item_frame"
+        android:orientation="vertical"
+        android:paddingBottom="10.0dip"
+        android:paddingLeft="10.0dip"
+        android:paddingRight="10.0dip"
+        android:paddingTop="15dp" >
+
+        <TextView
+            android:id="@+id/tv_taskweekly_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="@color/normal_text"
+            android:textSize="@dimen/big_text" />
+
+        <TextView
+            android:id="@+id/tv_taskweekly_content"
+            android:layout_width="match_parent"
+            android:layout_height="80.0dip"
+            android:textColor="@color/tips_text"
+            android:textSize="@dimen/small_text" />
+
+        <View
+            style="@style/LineVertical"
+            android:layout_marginBottom="5.0dip"
+            android:layout_marginTop="5.0dip" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3.0dip"
+            android:layout_marginTop="3.0dip" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/read_all"
+                android:textColor="@color/tips_text"
+                android:textSize="@dimen/small_text" />
+
+            <ImageView
+                android:id="@+id/img_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_arrow_right" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -8,7 +8,6 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="19" />
-	
    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -37,7 +36,7 @@
 	<uses-feature android:name = "android.hardware.camera" /> 
 	<uses-feature android:name = "android.hardware.camera.autofocus" /> 
 	<uses-permission android:name="android.permission.GET_TASKS"/>
-    
+	
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -133,6 +132,25 @@
            android:theme="@android:style/Theme.NoTitleBar"
            android:windowSoftInputMode="stateAlwaysHidden" />
         
+        <activity android:name="org.tang.exam.activity.CalendarActivity"  
+          android:launchMode="singleTask"
+          android:screenOrientation="portrait"  
+          android:configChanges="orientation|keyboardHidden">  
+		</activity> 
+        
+       <activity android:name="org.tang.exam.activity.DayTaskActivity"  
+          android:launchMode="singleTask"
+          android:screenOrientation="portrait">  
+		</activity> 
+        
+        <activity android:name="org.tang.exam.activity.PostTaskWeeklyActivity"  
+          android:launchMode="singleTask"
+          android:screenOrientation="portrait"  
+          android:configChanges="orientation">  
+		</activity> 
+        
+        
+         
         <receiver android:name="org.tang.exam.service.PushMessageReceiver">
             <intent-filter>
                 <!-- 接收push消息 -->

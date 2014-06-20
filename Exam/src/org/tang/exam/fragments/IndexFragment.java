@@ -2,6 +2,7 @@ package org.tang.exam.fragments;
 
 import org.tang.exam.R;
 import org.tang.exam.activity.AttendanceGdActivity;
+import org.tang.exam.activity.CalendarActivity;
 import org.tang.exam.activity.NoticeActivity;
 import org.tang.exam.activity.VideoActivity;
 
@@ -109,7 +110,7 @@ public class IndexFragment extends Fragment implements OnClickListener {
 	}
 	
 	private void onDayTaskClick() {
-		Intent intent = new Intent(getActivity(),NoticeActivity.class);
+		Intent intent = new Intent(getActivity(),CalendarActivity.class);
 		startActivity(intent);
 	}
 

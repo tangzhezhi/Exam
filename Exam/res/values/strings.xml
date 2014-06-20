@@ -94,10 +94,16 @@
     <string name="evection_check_in">出差登记</string>
     
     <!-- day_task -->
+    <string name="day_calendar">日历</string>
+    <string name="day_today">今天</string>
     <string name="day_task">日常任务</string>
     <string name="task_weekly">工作周报</string>
     <string name="task_distribute">任务交办</string>
     <string name="ask_fee">费用申请</string>
+    <string name="input_taskweekly_title">请输入周计划标题</string>
+    <string name="input_taskweekly_content">请输入周计划内容</string>
+    <string name="task_current_day">当天事务</string>
+    
     
     <!-- 客户管理-->
     <string name="client_manager">客户管理</string>
@@ -105,5 +111,6 @@
     
     <!-- 视频资源 -->
     <string name="video_resource">视频资源</string>
-    
+    <string name="query_video">查询</string>
+    <string name="query_video_name">请输入视频名称</string>
 </resources>

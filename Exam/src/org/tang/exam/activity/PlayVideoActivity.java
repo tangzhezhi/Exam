@@ -9,10 +9,13 @@ import io.vov.vitamio.widget.VideoView;
 
 import org.tang.exam.R;
 import org.tang.exam.base.BaseActionBarActivity;
+import org.tang.exam.utils.PushUtils;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,12 +25,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class PlayVideoActivity  extends BaseActionBarActivity implements OnInfoListener, OnBufferingUpdateListener {
-
+	private static final String TAG = "PlayVideoActivity";
 	  /**
 	   * TODO: Set the path variable to a streaming video URL or a local media file
 	   * path.
 	   */
-	  private String path = "http://pl.youku.com/playlist/m3u8?ts=1394676342&keyframe=0&vid=XNjU4MTc0Mjky&type=mp4";
+//	  private String path = "http://pl.youku.com/playlist/m3u8?ts=1394676342&keyframe=0&vid=XNjU4MTc0Mjky&type=mp4";
+	  private String path = "";
 	  private Uri uri;
 	  private VideoView mVideoView;
 	  private ProgressBar pb;
@@ -54,6 +58,12 @@ public class PlayVideoActivity  extends BaseActionBarActivity implements OnInfoL
 
 	    downloadRateView = (TextView) findViewById(R.id.download_rate);
 	    loadRateView = (TextView) findViewById(R.id.load_rate);
+	    
+	    
+	    String videoname =  getIntent().getStringExtra("videoname");
+	    path =  getIntent().getStringExtra("videourl");
+	    Log.d(TAG, path);
+	    
 	    if (path == "") {
 	      // Tell the user to provide a media file URL/path.
 	      Toast.makeText(

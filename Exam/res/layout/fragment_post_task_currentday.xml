@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_normal"
+    android:orientation="vertical"
+    android:padding="10.0dip" >
+
+
+    <EditText
+        android:id="@+id/et_task_current_day_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20.0dip"
+        android:background="@drawable/edittext_bg_selector"
+        android:ems="10"
+        android:hint="@string/task_current_day"
+        android:minLines="2"
+        android:textSize="@dimen/edit_text" />
+    
+     <Button
+            android:id="@+id/btn_current_day_add"
+            style="@style/RedButton"
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/normal_padding"
+            android:text="@string/sumbit" />
+</LinearLayout>

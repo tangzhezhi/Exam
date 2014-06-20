@@ -31,6 +31,14 @@ public class DBAdapter {
 		this.db = db;
 	}
 
+	public DBHelper getDbHelper() {
+		return dbHelper;
+	}
+
+	public void setDbHelper(DBHelper dbHelper) {
+		this.dbHelper = dbHelper;
+	}
+
 	public DBAdapter(Context context, String userId) {
 		this.mContext = context;
 		this.mUserId = userId;
@@ -70,7 +78,7 @@ public class DBAdapter {
 		db.insertOrThrow("Message", null, values);
 	}
 
-	private static class DBHelper extends SQLiteOpenHelper {
+	 static class DBHelper extends SQLiteOpenHelper {
 
 		public DBHelper(Context mContext, String name, CursorFactory factory, int version) {
 			super(mContext, name, factory, version);
@@ -92,7 +100,7 @@ public class DBAdapter {
 			db.execSQL(DBScript.CREATE_TABLE_USERINFO);
 			db.execSQL(DBScript.CREATE_TABLE_CHATMSG);
 			db.execSQL(DBScript.CREATE_TABLE_VIDEO);
-			
+			db.execSQL(DBScript.CREATE_TABLE_TASKCURRENTDAY);
 		}
 
 		@Override
@@ -113,6 +121,7 @@ public class DBAdapter {
 			db.execSQL(DBScript.DROP_TABLE_USERINFO);
 			db.execSQL(DBScript.DROP_TABLE_CHATMSG);
 			db.execSQL(DBScript.DROP_TABLE_Video);
+			db.execSQL(DBScript.DROP_TABLE_TASKCURRENTDAY);
 			onCreate(db);
 		}
 	}

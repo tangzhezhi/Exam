@@ -10,7 +10,15 @@ import android.util.Log;
 public class DateTimeUtil {
 
 	private static final String TAG = "DateTimeUtil";
-
+	
+	public static String getYmd() {
+		Date curDate = new Date(System.currentTimeMillis());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String result = sdf.format(curDate);
+		return result;
+	}
+	
+	
 	public static String getCompactTime() {
 		Date curDate = new Date(System.currentTimeMillis());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");

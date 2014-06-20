@@ -3,19 +3,18 @@ package org.tang.exam.fragments;
 import java.util.ArrayList;
 
 import org.tang.exam.R;
-import org.tang.exam.activity.PostNoticeActivity;
-import org.tang.exam.adapter.NoticeListAdapter;
+import org.tang.exam.activity.PostTaskWeeklyActivity;
+import org.tang.exam.adapter.TaskWeeklyListAdapter;
 import org.tang.exam.common.AppConstant;
-import org.tang.exam.common.AppConstant.NoticeType;
+import org.tang.exam.common.AppConstant.DayTaskStatus;
 import org.tang.exam.common.UserCache;
-import org.tang.exam.db.NoticeDBAdapter;
-import org.tang.exam.entity.Notice;
+import org.tang.exam.entity.TaskWeekly;
 import org.tang.exam.rest.MyStringRequest;
 import org.tang.exam.rest.RequestController;
-import org.tang.exam.rest.notice.QueryNoticeReq;
-import org.tang.exam.rest.notice.QueryNoticeResp;
+import org.tang.exam.rest.day.QueryTaskWeeklyReq;
+import org.tang.exam.rest.day.QueryTaskWeeklyResp;
+import org.tang.exam.utils.DateTimeUtil;
 import org.tang.exam.utils.MessageBox;
-import org.tang.exam.utils.PushUtils;
 import org.tang.exam.view.DropDownListView;
 import org.tang.exam.view.DropDownListView.OnDropDownListener;
 import android.content.Intent;
@@ -40,9 +39,11 @@ import com.android.volley.VolleyError;
 public class TaskWeeklyFragment  extends Fragment implements OnItemClickListener{
 	private static final String TAG = "TaskWeeklyFragment";
 	private View mView;
-	private NoticeListAdapter mAdapter;
-	private DropDownListView lvNoticeList;
-	private ArrayList<Notice> noticeList = new ArrayList<Notice>();
+	private TaskWeeklyListAdapter mAdapter;
+	private DropDownListView lvTaskWeeklyList;
+	private ArrayList<TaskWeekly> taskWeeklyList = new ArrayList<TaskWeekly>();
+	private String selectDate;
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,9 @@ public class TaskWeeklyFragment  extends Fragment implements OnItemClickListener
 	 @Override
      public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
          super.onCreateOptionsMenu(menu, inflater);
-         inflater.inflate(R.menu.notice, menu);
+         inflater.inflate(R.menu.menu, menu);
+         MenuItem menuItem = menu.findItem(R.id.action_menu);  
+         menuItem.setTitle("写周报");
      }
 	
 	@Override
@@ -61,10 +64,11 @@ public class TaskWeeklyFragment  extends Fragment implements OnItemClickListener
 		 super.onOptionsItemSelected(item);
          
 		switch (item.getItemId()) {
-		case R.id.action_notice:
+		case R.id.action_menu:
 			Intent startMain = new Intent();
 			startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startMain.setClass(getActivity(), PostNoticeActivity.class);
+			startMain.setClass(getActivity(), PostTaskWeeklyActivity.class);
+			startMain.putExtra("org.tang.exam.activity.PostTaskWeeklyActivity.selectDate", selectDate);
 			startActivity(startMain);
 			break;
 		case android.R.id.home:
@@ -79,10 +83,6 @@ public class TaskWeeklyFragment  extends Fragment implements OnItemClickListener
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mView = inflater.inflate(R.layout.fragment_notice_list, container, false);
-		
-		if(PushUtils.ACTION_NOTIFICATION_ORG_ENTRY.equals(getActivity().getIntent().getAction())){
-			refreshServicePushNotice();
-		}
 		return mView;
 	}
 	
@@ -109,34 +109,37 @@ public class TaskWeeklyFragment  extends Fragment implements OnItemClickListener
 	
 	
 	private void initData() {
-		noticeList.clear();
-		initNoticeList();
-		lvNoticeList = (DropDownListView) mView.findViewById(R.id.lv_notice_list);
-		mAdapter = new NoticeListAdapter(mView.getContext(), noticeList);
-		lvNoticeList.setAdapter(mAdapter);
-		lvNoticeList.setOnItemClickListener(this);
-		lvNoticeList.setOnDropDownListener(new OnDropDownListener() {
+		selectDate =  getActivity().getIntent().getStringExtra("org.tang.exam.activity.CalendarActivity.selectDate");
+		Log.d(TAG, "selectDate:::::"+selectDate);
+		if(null==selectDate||("").equals(selectDate)){
+			selectDate = DateTimeUtil.getYmd();
+		}
+		
+		taskWeeklyList.clear();
+		lvTaskWeeklyList = (DropDownListView) mView.findViewById(R.id.lv_notice_list);
+		mAdapter = new TaskWeeklyListAdapter(mView.getContext(), taskWeeklyList);
+		lvTaskWeeklyList.setAdapter(mAdapter);
+		lvTaskWeeklyList.setOnItemClickListener(this);
+		lvTaskWeeklyList.setOnDropDownListener(new OnDropDownListener() {
 			@Override
 			public void onDropDown() {
 				Log.d(TAG, "下拉点击");
-				refreshNoticeList();
+				refreshTaskWeeklyList();
 			}});
 		
-		mAdapter.notifyDataSetChanged();
+		
+		refreshTaskWeeklyList();
+		
 	}
 	
 	
-	public void refreshNoticeList() {
+	public void refreshTaskWeeklyList() {
 		UserCache userCache = UserCache.getInstance();
-		QueryNoticeReq reqData = new QueryNoticeReq();
-		reqData.setType(String.valueOf(NoticeType.ORG));
+		QueryTaskWeeklyReq reqData = new QueryTaskWeeklyReq();
+		reqData.setType(String.valueOf(DayTaskStatus.task_weekly));
 		reqData.setOrgId(userCache.getUserInfo().getOrgId());
-		String createTime = "";
-		
-		if (noticeList.size() > 0) {
-			createTime = noticeList.get(0).getCreateTime();
-		}
-		reqData.setCreateTime(createTime);
+		String createDate = selectDate;
+		reqData.setCreateDate(createDate);
 
 		MyStringRequest req = new MyStringRequest(Method.GET, reqData.getAllUrl(),
 				new Response.Listener<String>() {
@@ -144,12 +147,12 @@ public class TaskWeeklyFragment  extends Fragment implements OnItemClickListener
 					public void onResponse(String response) {
 						Log.v(TAG, "Response: " + response);
 						checkResponse(response);
-						lvNoticeList.onDropDownComplete();
+						lvTaskWeeklyList.onDropDownComplete();
 					}
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						lvNoticeList.onDropDownComplete();
+						lvTaskWeeklyList.onDropDownComplete();
 						MessageBox.showServerError(mView.getContext());
 					}
 				});
@@ -160,8 +163,8 @@ public class TaskWeeklyFragment  extends Fragment implements OnItemClickListener
 	
 	private void checkResponse(String response) {
 		try {
-			QueryNoticeResp respData = new QueryNoticeResp(response);
-			if (respData.getMsgFlag()==AppConstant.notice_query_success) {
+			QueryTaskWeeklyResp respData = new QueryTaskWeeklyResp(response);
+			if (respData.getMsgFlag()==AppConstant.taskweekly_query_success) {
 				doSuccess(respData);
 			} 
 			else{
@@ -173,44 +176,15 @@ public class TaskWeeklyFragment  extends Fragment implements OnItemClickListener
 		}
 	}
 	
-	private void doSuccess(QueryNoticeResp respData) {
-		noticeList.addAll(0, respData.getResponse());
-		NoticeDBAdapter dbAdapter = new NoticeDBAdapter();
-		try {
-			dbAdapter.open();
-			dbAdapter.addServiceNotice(respData.getResponse());
-			if(noticeList!=null && noticeList.size() > 0){
-				initData();
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "Failed to operate database: " + e);
-		} finally {
-			dbAdapter.close();
-		}
+	private void doSuccess(QueryTaskWeeklyResp respData) {
+		Log.v(TAG, "respData: " + respData);
+		taskWeeklyList.clear();
+		taskWeeklyList.addAll(respData.getResponse());
+		mAdapter.notifyDataSetChanged();
+		lvTaskWeeklyList.setSecondPositionVisible();
+		lvTaskWeeklyList.onDropDownComplete();
+		
 	}
-	
-	private void refreshServicePushNotice(){
-		initData();
-	}
-	
-	
-	
-	private void initNoticeList() {
-		NoticeDBAdapter dbAdapter = new NoticeDBAdapter();
-		try {
-			dbAdapter.open();
-			noticeList.addAll(dbAdapter.getNoticeOrg());
-			if(noticeList!=null && noticeList.size() > 0){
-				lvNoticeList.setSecondPositionVisible();
-				lvNoticeList.onDropDownComplete();
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "Failed to operate database: " + e);
-		} finally {
-			dbAdapter.close();
-		}
-	}
-	
 	
 	
 	@Override

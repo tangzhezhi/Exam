@@ -7,7 +7,6 @@ package org.tang.exam.fragments;
 import java.util.ArrayList;
 
 import org.tang.exam.R;
-import org.tang.exam.activity.MapActivity;
 import org.tang.exam.activity.PlayVideoActivity;
 import org.tang.exam.adapter.VideoListAdapter;
 import org.tang.exam.common.AppConstant;
@@ -19,19 +18,22 @@ import org.tang.exam.rest.RequestController;
 import org.tang.exam.rest.video.QueryVideoReq;
 import org.tang.exam.rest.video.QueryVideoResp;
 import org.tang.exam.utils.MessageBox;
-import org.tang.exam.utils.PushUtils;
 import org.tang.exam.view.DropDownListView;
 import org.tang.exam.view.DropDownListView.OnDropDownListener;
 
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -48,6 +50,11 @@ public class VideoFragment  extends Fragment implements OnItemClickListener{
 	private DropDownListView lvVideoList;
 	private ArrayList<Video> videoList = new ArrayList<Video>();
 	
+	private int pageSize = 10;
+	private int pageNo = 0;
+	private int totalPage = 1;
+	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,12 +64,57 @@ public class VideoFragment  extends Fragment implements OnItemClickListener{
 	 @Override
      public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
          super.onCreateOptionsMenu(menu, inflater);
+         inflater.inflate(R.menu.video, menu);
+         
+         MenuItem searchItem = menu.findItem(R.id.action_video_search);  
+         SearchView sv = (SearchView) MenuItemCompat.getActionView(searchItem);  
+         sv.setQueryHint(getString(R.string.query_video_name));  
+         sv.setIconifiedByDefault(true);  
+         sv.setSubmitButtonEnabled(true);
+         sv.setOnQueryTextListener(oQueryTextListener);  
      }
 	
+	 OnQueryTextListener oQueryTextListener = new OnQueryTextListener() {  
+		    
+		  @Override  
+		  public boolean onQueryTextSubmit(String query) {  
+		   Log.d(TAG,"onQueryTextSubmit is:"+query);  
+			  if(query.length() > 1){
+				  queryVideoByName(query);
+				  
+				  totalPage = 1;
+				  pageNo = 0;
+						  
+				  
+			  }
+			  else {
+				  refreshVideoList();
+			  }
+		   return true;  
+		  }  
+		    
+		  @Override  
+		  public boolean onQueryTextChange(String newText) {  
+			  Log.d(TAG,"query string is:"+newText); 
+			  if(newText.length() > 1){
+				  queryVideoByName(newText);
+				  totalPage = 1;
+				  pageNo = 0;
+			  }
+			  else {
+				  refreshVideoList();
+			  }
+			  
+		   return true;  
+		  }  
+	 };  
+	 
+	 
+	 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		 super.onOptionsItemSelected(item);
-         
+         Log.d(TAG, "点击了。。。"+item.getItemId());
 		switch (item.getItemId()) {
 		case android.R.id.home:
  			getActivity().finish();
@@ -76,10 +128,6 @@ public class VideoFragment  extends Fragment implements OnItemClickListener{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mView = inflater.inflate(R.layout.fragment_video_list, container, false);
-		
-		if(PushUtils.ACTION_NOTIFICATION_VIDEO.equals(getActivity().getIntent().getAction())){
-			refreshServicePushVideo();
-		}
 		return mView;
 	}
 	
@@ -107,11 +155,11 @@ public class VideoFragment  extends Fragment implements OnItemClickListener{
 	
 	private void initData() {
 		videoList.clear();
-		initVideoList();
 		lvVideoList = (DropDownListView) mView.findViewById(R.id.lv_video_list);
 		mAdapter = new VideoListAdapter(mView.getContext(), videoList);
-		lvVideoList.setAdapter(mAdapter);
 		lvVideoList.setOnItemClickListener(this);
+		lvVideoList.setHeaderDefaultText("加载下一页");
+		lvVideoList.setFooterDefaultText("加载上一页");
 		lvVideoList.setOnDropDownListener(new OnDropDownListener() {
 			@Override
 			public void onDropDown() {
@@ -119,38 +167,130 @@ public class VideoFragment  extends Fragment implements OnItemClickListener{
 				refreshVideoList();
 			}});
 		
-		mAdapter.notifyDataSetChanged();
+		lvVideoList.setOnBottomListener(new OnClickListener() {
+			 
+			@Override
+            public void onClick(View v) {
+            	Log.d(TAG, "下拉底部");
+            	refreshVideoListDown();
+            }
+        });
+		
+		lvVideoList.setAdapter(mAdapter);
+		
+		refreshVideoList();
 	}
 	
 	
-	public void refreshVideoList() {
+	
+	private void queryVideoByName(String name){
+		QueryVideoReq reqData = new QueryVideoReq();
+			reqData.setPage("1");
+			reqData.setRows("10");
+			reqData.setVideoname(name);
+			MyStringRequest req = new MyStringRequest(Method.GET, reqData.getAllUrl(),
+					new Response.Listener<String>() {
+						@Override
+						public void onResponse(String response) {
+							
+							
+							
+							Log.v(TAG, "Response: " + response);
+							checkResponse(response);
+						}
+					}, new Response.ErrorListener() {
+						@Override
+						public void onErrorResponse(VolleyError error) {
+							MessageBox.showServerError(mView.getContext());
+						}
+					});
+
+			RequestController.getInstance().addToRequestQueue(req, TAG);
+	}
+	
+	
+	
+	
+	private void refreshVideoList() {
 		UserCache userCache = UserCache.getInstance();
 		QueryVideoReq reqData = new QueryVideoReq();
 		
-		String createTime = "0";
-		
-		if (videoList.size() > 0) {
-			createTime = videoList.get(0).getCreatetime();
-			reqData.setCreatetime(createTime);
+		if(pageNo < totalPage){
+			String page = String.valueOf(pageNo+1);
+			String rows = String.valueOf(pageSize);
+			
+			reqData.setPage(page);
+			reqData.setRows(rows);
+			
+			String createTime = "0";
+			
+			if (videoList.size() > 0) {
+				createTime = videoList.get(0).getCreatetime();
+				reqData.setCreatetime(createTime);
+			}
+
+			MyStringRequest req = new MyStringRequest(Method.GET, reqData.getAllUrl(),
+					new Response.Listener<String>() {
+						@Override
+						public void onResponse(String response) {
+							Log.v(TAG, "Response: " + response);
+							checkResponse(response);
+						}
+					}, new Response.ErrorListener() {
+						@Override
+						public void onErrorResponse(VolleyError error) {
+							MessageBox.showServerError(mView.getContext());
+						}
+					});
+
+			RequestController.getInstance().addToRequestQueue(req, TAG);
 		}
+		else{
+			lvVideoList.onDropDownComplete();
+			Toast.makeText(getActivity(), "已经到最后一页", Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	
+	
+	public void refreshVideoListDown() {
+		UserCache userCache = UserCache.getInstance();
+		QueryVideoReq reqData = new QueryVideoReq();
+		
+		if(pageNo > 1){
+			String page = String.valueOf(pageNo-1);
+			String rows = String.valueOf(pageSize);
+			
+			reqData.setPage(page);
+			reqData.setRows(rows);
+			
+			String createTime = "0";
+			
+			if (videoList.size() > 0) {
+				createTime = videoList.get(0).getCreatetime();
+				reqData.setCreatetime(createTime);
+			}
 
-		MyStringRequest req = new MyStringRequest(Method.GET, reqData.getAllUrl(),
-				new Response.Listener<String>() {
-					@Override
-					public void onResponse(String response) {
-						Log.v(TAG, "Response: " + response);
-						checkResponse(response);
-						lvVideoList.onDropDownComplete();
-					}
-				}, new Response.ErrorListener() {
-					@Override
-					public void onErrorResponse(VolleyError error) {
-						lvVideoList.onDropDownComplete();
-						MessageBox.showServerError(mView.getContext());
-					}
-				});
+			MyStringRequest req = new MyStringRequest(Method.GET, reqData.getAllUrl(),
+					new Response.Listener<String>() {
+						@Override
+						public void onResponse(String response) {
+							Log.v(TAG, "Response: " + response);
+							checkResponse(response);
+						}
+					}, new Response.ErrorListener() {
+						@Override
+						public void onErrorResponse(VolleyError error) {
+							MessageBox.showServerError(mView.getContext());
+						}
+					});
 
-		RequestController.getInstance().addToRequestQueue(req, TAG);
+			RequestController.getInstance().addToRequestQueue(req, TAG);
+		}
+		else{
+			lvVideoList.onDropDownComplete();
+			Toast.makeText(getActivity(), "已经到第一页", Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	
@@ -158,7 +298,14 @@ public class VideoFragment  extends Fragment implements OnItemClickListener{
 		try {
 			QueryVideoResp respData = new QueryVideoResp(response);
 			if (respData.getMsgFlag()==AppConstant.video_query_success) {
-				doSuccess(respData);
+				pageSize = respData.getPageSize();
+				pageNo = respData.getPageNo();
+				totalPage = respData.getTotalPage();
+				
+				if(null!=respData.getResponse()&&!("").equals(respData)){
+					doSuccess(respData);
+				}
+				
 			} 
 			else{
 				Toast.makeText(getActivity(), "解析错误", Toast.LENGTH_LONG).show();
@@ -170,19 +317,14 @@ public class VideoFragment  extends Fragment implements OnItemClickListener{
 	}
 	
 	private void doSuccess(QueryVideoResp respData) {
-		videoList.addAll(0, respData.getResponse());
-		VideoDBAdapter dbAdapter = new VideoDBAdapter();
-		try {
-			dbAdapter.open();
-			dbAdapter.addVideo(respData.getResponse());
-			if(videoList!=null && videoList.size() > 0){
-				initData();
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "Failed to operate database: " + e);
-		} finally {
-			dbAdapter.close();
-		}
+		Log.v(TAG, "respData: " + respData);
+		videoList.clear();
+		videoList.addAll(respData.getResponse());
+		Log.v(TAG, "videoList: " + videoList.size());
+		mAdapter.notifyDataSetChanged();
+		lvVideoList.setSecondPositionVisible();
+		lvVideoList.onDropDownComplete();
+		Log.v(TAG, "lvVideoList: " + lvVideoList.getCount());
 	}
 	
 	private void refreshServicePushVideo(){
@@ -199,6 +341,7 @@ public class VideoFragment  extends Fragment implements OnItemClickListener{
 			if(videoList!=null && videoList.size() > 0){
 				lvVideoList.setSecondPositionVisible();
 				lvVideoList.onDropDownComplete();
+				Log.d(TAG, "test");
 			}
 		} catch (Exception e) {
 			Log.e(TAG, "Failed to operate database: " + e);
@@ -217,9 +360,11 @@ public class VideoFragment  extends Fragment implements OnItemClickListener{
 				Intent intent = new Intent(getActivity(), PlayVideoActivity.class);
 	            Bundle bundle = new Bundle();
 	            Video video = videoList.get(pos==0?0:pos-1);
-	            bundle.putString("videoname", video.getVideoName());
-	            bundle.putString("videourl", video.getVideoUrl());
-	            intent.putExtra("videoinfo",bundle);
+//	            bundle.putString("videoname", video.getVideoName());
+//	            bundle.putString("videourl", video.getVideoUrl());
+//	            intent.putExtra("videoinfo",bundle);
+	            intent.putExtra("videourl", video.getVideoUrl());
+	            intent.putExtra("videoname", video.getVideoName());
 	            getActivity().startActivity(intent);
 			break;
 		}

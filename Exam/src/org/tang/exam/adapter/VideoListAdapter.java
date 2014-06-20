@@ -17,6 +17,7 @@ import com.android.volley.toolbox.ImageLoader.ImageListener;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,14 +25,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class VideoListAdapter extends MyBaseAdatper {
+	private static final String TAG = "VideoListAdapter";
 	private LayoutInflater mInflater;
-	private ArrayList<Video> mVideoList = new ArrayList<Video>();
+	private ArrayList<Video> mVideoList;
 
 	public VideoListAdapter(Context context, ArrayList<Video> videoList) {
 		super();
-		if(videoList!=null && videoList.size() > 0){
-			mVideoList = videoList;
-		}
+		mVideoList = videoList;
 		mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
@@ -74,8 +74,12 @@ public class VideoListAdapter extends MyBaseAdatper {
 	    			video.setVideopic("");
 	    		}
 	    		
-				Bitmap bm = ImageCacheManager.getInstance().getImageLoader().get(video.getVideopic(), listener).getBitmap();
-				holder.tvVideopic.setImageBitmap(bm);
+				try {
+					Bitmap bm = ImageCacheManager.getInstance().getImageLoader().get(video.getVideopic(), listener).getBitmap();
+					holder.tvVideopic.setImageBitmap(bm);
+				} catch (Exception e) {
+					Log.e(TAG, ""+e);
+				}
 		}
 
 		return convertView;
