@@ -11,16 +11,16 @@
         android:id="@+id/layout_task_current_day_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20.0dip"
+        android:layout_marginTop="1.0dip"
         android:background="@drawable/notice_item_frame"
         android:orientation="vertical"
-        android:padding="5dp" >
+        android:padding="2dp" >
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3.0dip"
-            android:layout_marginTop="3.0dip" >
+            android:layout_marginBottom="1.0dip"
+            android:layout_marginTop="1.0dip" >
             
 			<TextView
             android:id="@+id/tv_task_current_day_title"

@@ -22,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class TaskCurrentDayFragment  extends Fragment {
@@ -122,8 +123,10 @@ public class TaskCurrentDayFragment  extends Fragment {
 	    			list.add(td);
 	    			dbAdapter.open();
 	    			dbAdapter.addTaskCurrentDay(list);
+	    			Toast.makeText(getActivity(), "保存成功", Toast.LENGTH_SHORT).show();
 	    		} catch (Exception e) {
 	    			Log.e(TAG, "Failed to operate database: " + e);
+	    			Toast.makeText(getActivity(), "保存失败", Toast.LENGTH_SHORT).show();
 	    		} finally {
 	    			dbAdapter.close();
 	    		}

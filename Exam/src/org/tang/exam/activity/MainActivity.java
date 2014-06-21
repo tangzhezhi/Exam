@@ -15,12 +15,14 @@ import org.tang.exam.rest.RequestController;
 import org.tang.exam.utils.PushUtils;
 import org.tang.exam.view.BadgeView;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -64,11 +66,11 @@ public class MainActivity extends BaseActionBarFragmentActivity implements OnPag
 		initPushService();
 		handleIntent(getIntent());
 		registerMyReceiver();
+		Log.d(TAG, "onCreate：：");
 	}
 
 	private void initPushService() {
 		// Push: 以apikey的方式登录，一般放在主Activity的onCreate中。
-		// 这里把apikey存放于manifest文件中，只是一种存放方式，
 		// 您可以用自定义常量等其它方式实现，来替换参数中的Utils.getMetaValue(PushDemoActivity.this, "api_key")
 		// 通过share preference实现的绑定标志开关，如果已经成功绑定，就取消这次绑定
 			Log.d("YYY", "before start work at " + Calendar.getInstance().getTimeInMillis());
@@ -78,21 +80,25 @@ public class MainActivity extends BaseActionBarFragmentActivity implements OnPag
 			Log.d("YYY", "after start work at " + Calendar.getInstance().getTimeInMillis());
 			// Push: 如果想基于地理位置推送，可以打开支持地理位置的推送的开关
 //			PushManager.enableLbs(getApplicationContext());
-//			Log.d("YYY", "after enableLbs at " + Calendar.getInstance().getTimeInMillis());
+			SharedPreferences preferences = getSharedPreferences(PushUtils.PREFERENCES_NAME, Activity.MODE_PRIVATE);
+			pushUserId = preferences.getString("pushUserId", "");
+			pushChannelId = preferences.getString("pushChannelId", "");
+			
 	}
 
 	@Override
 	protected void onNewIntent(Intent intent) {
-		setIntent(intent);
-		String action = intent.getAction();
-		if(intent!=null && intent.getExtras()!=null && intent.getExtras().getSerializable(PushUtils.EXTRA_MESSAGE)!=null){
-			Log.d(TAG, (String) intent.getExtras().getSerializable(PushUtils.EXTRA_MESSAGE));
-			
-			 pushUserId = (String)intent.getExtras().getSerializable("pushUserId"); 
-			 pushChannelId = intent.getStringExtra("pushChannelId");
+//		if(intent!=null && intent.getExtras()!=null && intent.getExtras().getSerializable(PushUtils.EXTRA_MESSAGE)!=null){
+//			Log.d(TAG, "onNewIntent::"+(String) intent.getExtras().getSerializable(PushUtils.EXTRA_MESSAGE));
+//			 pushUserId = (String)intent.getExtras().getSerializable("pushUserId"); 
+//			 pushChannelId = intent.getStringExtra("pushChannelId");
+//			 if(!PushUtils.hasBind(MainActivity.this)){
+//				 handleIntent(intent);
+//			 }
+//		}
+		 if(!PushUtils.hasBind(MainActivity.this)){
 			 handleIntent(intent);
-		}
-		
+		 }
 	}
 	
 	
@@ -100,13 +106,13 @@ public class MainActivity extends BaseActionBarFragmentActivity implements OnPag
 		
 		Log.d(TAG, "推送绑定状态：："+PushUtils.hasBind(MainActivity.this));
 		
-		if(pushUserId!=null && !pushUserId.equals("")){
+		if(PushUtils.hasBind(MainActivity.this)){
 			onBindSuccess(pushUserId, pushChannelId);
 		}
 		else{
 			GetPushBindTask dTask = new GetPushBindTask();  
             dTask.execute(10000L);  
-			
+            Log.d(TAG, "GetPushBindTask：：");
 		}
 	}
 	
@@ -326,12 +332,10 @@ public class MainActivity extends BaseActionBarFragmentActivity implements OnPag
 
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
-		Log.d(TAG, "onPageScrollStateChanged：：：："+arg0);
 	}
 
 	@Override
 	public void onPageScrolled(int arg0, float arg1, int arg2) {
-		Log.d(TAG, "onPageScrolled：：：：：："+arg0+":::::"+arg1+":::::"+arg2);
 	}
 
 	@Override

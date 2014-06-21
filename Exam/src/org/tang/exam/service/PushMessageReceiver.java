@@ -24,6 +24,7 @@ import org.tang.exam.utils.DateTimeUtil;
 import org.tang.exam.utils.MessageBox;
 import org.tang.exam.utils.PushUtils;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -31,6 +32,7 @@ import android.app.PendingIntent;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -71,7 +73,7 @@ public class PushMessageReceiver extends FrontiaPushMessageReceiver {
     
     private String  pushUserId;
     private String pushChannelId;
-
+    
     public String getPushUserId() {
 		return pushUserId;
 	}
@@ -116,13 +118,28 @@ public class PushMessageReceiver extends FrontiaPushMessageReceiver {
         Log.d(TAG, responseString);
 
         // 绑定成功，设置已绑定flag，可以有效的减少不必要的绑定请求
+        SharedPreferences preferences = context.getSharedPreferences(PushUtils.PREFERENCES_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
         if (errorCode == 0) {
             PushUtils.setBind(context, true);
             pushUserId = userId;
             pushChannelId = channelId;
+            //保存组件中的值
+            editor.putString("pushUserId", pushUserId);
+            editor.putString("pushChannelId", pushChannelId);
+            editor.putString("bind_flag", "ok");
+            //提交保存的结果
+            editor.commit();
+        }
+        else{
+            editor.putString("pushUserId", null);
+            editor.putString("pushChannelId", null);
+            editor.putString("bind_flag", null);
+            //提交保存的结果
+            editor.commit();
         }
         // Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
-        updateContent(context, responseString);
+//        updateContent(context, responseString);
     }
 
     /**

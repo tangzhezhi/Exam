@@ -43,7 +43,7 @@ public class PushUtils {
 	    public static final String ACTION_NOTIFICATION_ORG_ENTRY = "notification_org_entry";
 	    public static final String ACTION_NOTIFICATION_VIDEO = "notification_video_entry";
 	    
-	    
+	    public static final String PREFERENCES_NAME="push_info";
 	    public static String logStringCache = "";
 
 	    // 获取ApiKey

@@ -71,7 +71,6 @@ public class CalendarActivity extends BaseActionBarActivity  implements OnGestur
 	private String ruzhuTime;
 	private String lidianTime;
 	
-	private ListView lvTaskWeeklyList;
 	private ArrayList<TaskWeekly> taskWeeklyList = new ArrayList<TaskWeekly>();
 	private TaskWeeklyListAdapter mAdapter;
 	private String selectDate;
@@ -111,20 +110,16 @@ public class CalendarActivity extends BaseActionBarActivity  implements OnGestur
 	}
 	
 	
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		Log.d(TAG, "加载：：");
+		initDayTask();
+	}
+
 	private void initDayTask(){
 		UserCache userCache = UserCache.getInstance();
 		UserInfo userInfo = userCache.getUserInfo();
-//		taskWeeklyList.clear();
-//		lvTaskWeeklyList = (ListView) findViewById(R.id.lv_list);
-//		mAdapter = new TaskWeeklyListAdapter(this, taskWeeklyList);
-//		lvTaskWeeklyList.setAdapter(mAdapter);
-//		lvTaskWeeklyList.setOnItemClickListener( new OnItemClickListener(){
-//			@Override
-//			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-//					long arg3) {
-//					Log.d(TAG, "点击了"+arg2);
-//			}} );
-//		refreshTaskWeeklyList();
 		
 		if(null==selectDate||("").equals(selectDate)){
 			selectDate = DateTimeUtil.getYmd();

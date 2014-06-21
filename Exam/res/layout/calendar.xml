@@ -2,18 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/calendar_bg"
     android:orientation="vertical" >
     
-    <LinearLayout 
-        android:layout_width="fill_parent"
-        android:layout_height="0dip"
-        android:orientation="vertical"
-        android:layout_weight="3"
-       >
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="53dp"
-        android:background="#ff394147"
+        android:background="#FFAEB9"
         android:gravity="center_vertical" >
 
         <LinearLayout
@@ -73,7 +68,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="22.0dip"
-        android:background="#ff8091a8" >
+        android:background="#FFC1C1" >
 
         <TextView
             style="@style/weekName"
@@ -108,25 +103,40 @@
         android:id="@+id/gridview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#00000000"
         android:clickable="true"
         android:clipChildren="true"
         android:columnWidth="55.0dip"
         android:horizontalSpacing="1.0dip"
-        android:listSelector="@null"
+        android:listSelector="@drawable/grid_selector"
         android:numColumns="7"
         android:paddingBottom="1.0dip"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="1.0dip" />
-    </LinearLayout>
-    <LinearLayout 
+        android:verticalSpacing="1.0dip">
+      </GridView>
+      <TextView
+            android:id="@+id/tv_task_current_day_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_marginTop="10.0dip"
+            android:text="当日待办事务"
+            android:background="#F0FFF0"
+            android:textColor="@color/holo_blue_light"
+            android:textSize="@dimen/small_text" />
+       <View
+            style="@style/LineVertical"
+            android:layout_marginBottom="1.0dip"
+            android:layout_marginTop="1.0dip" />
+       <RelativeLayout 
         android:layout_width="fill_parent"
-        android:layout_height="0dip"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="1">
+        >
   		<ListView
         android:id="@+id/lv_list"
         style="@style/NoSelectorList"
+        android:layout_marginTop="1.0dip"
+        android:padding="2dp"
          />
-  	</LinearLayout>
+  	   </RelativeLayout>
 </LinearLayout>
