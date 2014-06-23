@@ -5,6 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.tang.exam.R;
+import org.tang.exam.common.UserCache;
+import org.tang.exam.db.TaskCurrentDayDBAdapter;
+import org.tang.exam.entity.UserInfo;
 import org.tang.exam.utils.LunarCalendar;
 import org.tang.exam.utils.SpecialCalendar;
 
@@ -29,6 +32,7 @@ import android.widget.TextView;
  *
  */
 public class CalendarAdapter extends BaseAdapter {
+	private static final String TAG = "CalendarAdapter";
 	private boolean isLeapyear = false;  //是否为闰年
 	private int daysOfMonth = 0;      //某月的天数
 	private int dayOfWeek = 0;        //具体某一天是星期几
@@ -47,7 +51,7 @@ public class CalendarAdapter extends BaseAdapter {
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
 	private int currentFlag = -1;     //用于标记当天
-	private int[] schDateTagFlag = null;  //存储当月所有的日程日期
+	private Object[] schDateTagFlag = null;  //存储当月所有的日程日期
 	
 	private String showYear = "";   //用于在头部显示的年份
 	private String showMonth = "";  //用于在头部显示的月份
@@ -72,6 +76,10 @@ public class CalendarAdapter extends BaseAdapter {
 	public CalendarAdapter(Context context,Resources rs,int jumpMonth,int jumpYear,int year_c,int month_c,int day_c){
 		this();
 		this.context= context;
+		
+		UserCache userCache = UserCache.getInstance();
+		UserInfo userInfo = userCache.getUserInfo();
+		
 		sc = new SpecialCalendar();
 		lc = new LunarCalendar();
 		this.res = rs;
@@ -102,6 +110,13 @@ public class CalendarAdapter extends BaseAdapter {
 		
 		getCalendar(Integer.parseInt(currentYear),Integer.parseInt(currentMonth));
 		
+		String tempcurrentMonth = Integer.valueOf(currentMonth)>10?currentMonth:("0"+currentMonth);
+		
+		String startdate = currentYear+ tempcurrentMonth+"00";
+		String enddate =  currentYear+tempcurrentMonth+"32";
+		Object[] monthtasks  =getCurrentMonthTask(userInfo.getUserId(),startdate,enddate);
+		
+		this.schDateTagFlag = monthtasks;
 	}
 	
 	public CalendarAdapter(Context context,Resources rs,int year, int month, int day){
@@ -163,7 +178,7 @@ public class CalendarAdapter extends BaseAdapter {
 		}
 		if(schDateTagFlag != null && schDateTagFlag.length >0){
 			for(int i = 0; i < schDateTagFlag.length; i++){
-				if(schDateTagFlag[i] == position){
+				if(String.valueOf(schDateTagFlag[i]).subSequence(6, 8).equals((Integer.valueOf(d)>10)?d:("0"+d)) ){
 					//设置日程标记背景
 					textView.setBackgroundResource(R.drawable.mark);
 				}
@@ -304,5 +319,28 @@ public class CalendarAdapter extends BaseAdapter {
 
 	public void setCyclical(String cyclical) {
 		this.cyclical = cyclical;
+	}
+	
+	
+	/**
+	 * 查询选择的月份里的所有事件日期
+	 * @param year
+	 * @param month
+	 * @return
+	 */
+	private Object [] getCurrentMonthTask(String userid,String startdate ,String enddate){
+		Object [] tasks = null;
+		
+		TaskCurrentDayDBAdapter dbAdapter = new TaskCurrentDayDBAdapter();
+		try {
+			dbAdapter.open();
+			tasks = dbAdapter.getTaskCurrentMonth(userid, startdate, enddate);
+			Log.e(TAG, "getTaskCurrentMonth.size: " + tasks.length);
+		} catch (Exception e) {
+			Log.e(TAG, "Failed to operate database: " + e);
+		} finally {
+			dbAdapter.close();
+		}
+		return tasks;
 	}
 }

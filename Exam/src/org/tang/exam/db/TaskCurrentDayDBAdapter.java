@@ -5,6 +5,7 @@
 
 package org.tang.exam.db;
 import java.util.ArrayList;
+
 import org.tang.exam.entity.TaskCurrentDay;
 
 import android.content.ContentValues;
@@ -23,6 +24,23 @@ public class TaskCurrentDayDBAdapter extends DBAdapter {
 				userId,date);
 		return getTaskCurrentDayByWhere(where);
 	}
+	
+	public Object [] getTaskCurrentMonth(String userId,String startdate,String enddate) {
+		String where = String.format(" authorId = '%s' and remindDate > '%s'  and  remindDate < '%s' ", 
+				userId,startdate,enddate);
+		ArrayList<TaskCurrentDay>  ltask =  getTaskCurrentDayByWhere(where);
+		ArrayList<String> slist = new ArrayList<String>();
+		for(TaskCurrentDay task : ltask){
+			slist.add(task.getRemindDate());
+		}
+		if(slist!=null && slist.size() > 0){
+			return  slist.toArray();
+		}
+		else{
+			return null;
+		}
+	}
+	
 	
 	
 	private ArrayList<TaskCurrentDay> getTaskCurrentDayByWhere(String where) {

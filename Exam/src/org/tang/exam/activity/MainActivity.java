@@ -88,14 +88,6 @@ public class MainActivity extends BaseActionBarFragmentActivity implements OnPag
 
 	@Override
 	protected void onNewIntent(Intent intent) {
-//		if(intent!=null && intent.getExtras()!=null && intent.getExtras().getSerializable(PushUtils.EXTRA_MESSAGE)!=null){
-//			Log.d(TAG, "onNewIntent::"+(String) intent.getExtras().getSerializable(PushUtils.EXTRA_MESSAGE));
-//			 pushUserId = (String)intent.getExtras().getSerializable("pushUserId"); 
-//			 pushChannelId = intent.getStringExtra("pushChannelId");
-//			 if(!PushUtils.hasBind(MainActivity.this)){
-//				 handleIntent(intent);
-//			 }
-//		}
 		 if(!PushUtils.hasBind(MainActivity.this)){
 			 handleIntent(intent);
 		 }

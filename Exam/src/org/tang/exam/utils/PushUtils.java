@@ -3,6 +3,7 @@ package org.tang.exam.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -71,9 +72,11 @@ public class PushUtils {
 
 	    // 用share preference来实现是否绑定的开关。在ionBind且成功时设置true，unBind且成功时设置false
 	    public static boolean hasBind(Context context) {
-	        SharedPreferences sp = PreferenceManager
-	                .getDefaultSharedPreferences(context);
-	        String flag = sp.getString("bind_flag", "");
+//	        SharedPreferences sp = PreferenceManager
+//	                .getDefaultSharedPreferences(context);
+	    	SharedPreferences preferences = context.
+	    			getSharedPreferences(PushUtils.PREFERENCES_NAME, Activity.MODE_PRIVATE);
+	        String flag = preferences.getString("bind_flag", "");
 	        if ("ok".equalsIgnoreCase(flag)) {
 	            return true;
 	        }

@@ -43,10 +43,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,6 +82,9 @@ public class CalendarActivity extends BaseActionBarActivity  implements OnGestur
 	private ArrayList<TaskCurrentDay> taskCurrentDayList = new ArrayList<TaskCurrentDay>();
 	private TaskCurrentDayListAdapter mAdapter2;
 	
+	private LinearLayout layout_left;
+	private LinearLayout layout_right;
+	
 	public CalendarActivity() {
 		Date date = new Date();
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
@@ -92,6 +98,7 @@ public class CalendarActivity extends BaseActionBarActivity  implements OnGestur
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.calendar);
+		UserCache userCache = UserCache.getInstance();
 		
 		ActionBar bar = getSupportActionBar();
 		bar.setTitle(getResources().getString(R.string.back));
@@ -99,14 +106,50 @@ public class CalendarActivity extends BaseActionBarActivity  implements OnGestur
 		bar.setDisplayHomeAsUpEnabled(true);
 		
 		gestureDetector = new GestureDetectorCompat(this,this);
+		
         calV = new CalendarAdapter(this,getResources(),jumpMonth,jumpYear,year_c,month_c,day_c);
         addGridView();
         gridView.setAdapter(calV);
         
 		topText = (TextView) findViewById(R.id.tv_month);
+		
+		layout_left = (LinearLayout) findViewById(R.id.btn_prev_month );
+		layout_right = (LinearLayout) findViewById(R.id.btn_next_month);
+		
 		addTextToTopTextView(topText);
 		
 		initDayTask();
+		
+		layout_left.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				taskCurrentDayList.clear();
+				mAdapter2.notifyDataSetChanged();
+	            //向右滑动
+				addGridView();   //添加一个gridView
+				jumpMonth--;     //上一个月
+				calV = new CalendarAdapter(CalendarActivity.this,getResources(),jumpMonth,jumpYear,year_c,month_c,day_c);
+		        gridView.setAdapter(calV);
+		        addTextToTopTextView(topText);
+			}
+			
+		});
+		
+		layout_right.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				taskCurrentDayList.clear();
+				mAdapter2.notifyDataSetChanged();
+	            //向右滑动
+				addGridView();   //添加一个gridView
+				jumpMonth++;     //上一个月
+				calV = new CalendarAdapter(CalendarActivity.this,getResources(),jumpMonth,jumpYear,year_c,month_c,day_c);
+		        gridView.setAdapter(calV);
+		        addTextToTopTextView(topText);
+			}
+			
+		});
+		
 	}
 	
 	
@@ -204,23 +247,27 @@ public class CalendarActivity extends BaseActionBarActivity  implements OnGestur
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
+		UserCache userCache = UserCache.getInstance();
+		UserInfo userInfo = userCache.getUserInfo();
+		
+		taskCurrentDayList.clear();
+		mAdapter2.notifyDataSetChanged();
+		
 		int gvFlag = 0;         //每次添加gridview到viewflipper中时给的标记
 		if (e1.getX() - e2.getX() > 120) {
             //像左滑动
 			addGridView();   //添加一个gridView
 			jumpMonth++;     //下一个月
-			
 			calV = new CalendarAdapter(this,getResources(),jumpMonth,jumpYear,year_c,month_c,day_c);
 	        gridView.setAdapter(calV);
 	        addTextToTopTextView(topText);
 	        gvFlag++;
-	
+	        
 			return true;
 		} else if (e1.getX() - e2.getX() < -120) {
             //向右滑动
 			addGridView();   //添加一个gridView
 			jumpMonth--;     //上一个月
-			
 			calV = new CalendarAdapter(this,getResources(),jumpMonth,jumpYear,year_c,month_c,day_c);
 	        gridView.setAdapter(calV);
 	        gvFlag++;
@@ -247,26 +294,28 @@ public class CalendarActivity extends BaseActionBarActivity  implements OnGestur
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.d(TAG, ""+item.getItemId());
+		
+		UserCache userCache = UserCache.getInstance();
+		UserInfo userInfo = userCache.getUserInfo();
+		
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			this.finish();
 			break;
 		   case R.id.action_menu:
 	        	//跳转到今天
-	        	int xMonth = jumpMonth;
-	        	int xYear = jumpYear;
-	        	int gvFlag =0;
 	        	jumpMonth = 0;
 	        	jumpYear = 0;
 	        	addGridView();   //添加一个gridView
 	        	year_c = Integer.parseInt(currentDate.split("-")[0]);
 	        	month_c = Integer.parseInt(currentDate.split("-")[1]);
 	        	day_c = Integer.parseInt(currentDate.split("-")[2]);
+	        	
 	        	calV = new CalendarAdapter(this,getResources(),jumpMonth,jumpYear,year_c,month_c,day_c);
 		        gridView.setAdapter(calV);
 		        addTextToTopTextView(topText);
-		        gvFlag++;
-
+		        selectDate = DateTimeUtil.getYmd();
+		        initDayTask();
 	        	break;
 		}
 		return true;
@@ -324,13 +373,13 @@ public class CalendarActivity extends BaseActionBarActivity  implements OnGestur
 			}
 		});           
 		
-		gridView.setOnItemClickListener(new OnItemClickListener() {
-            //gridView中的每一个item的点击事件
-			
+		
+		gridView.setOnItemLongClickListener(new OnItemLongClickListener (){
+
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-					long arg3) {
-					Log.d(TAG, "点击了::"+position);
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
+				Log.d(TAG, "点击了::"+position);
 				
 				  //点击任何一个item，得到这个item的日期(排除点击的是周日到周六(点击不响应))
 				  int startPosition = calV.getStartPositon();
@@ -356,7 +405,39 @@ public class CalendarActivity extends BaseActionBarActivity  implements OnGestur
 		                intent.putExtra("org.tang.exam.activity.CalendarActivity.selectDate", selectDate);
 		                startActivity(intent);
 	                }
-				  }
+				
+				return true;
+			}
+			
+		});
+		
+		
+		gridView.setOnItemClickListener(new OnItemClickListener() {
+            //gridView中的每一个item的点击事件
+			
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long arg3) {
+					Log.d(TAG, "点击了::"+position);
+				
+				  //点击任何一个item，得到这个item的日期(排除点击的是周日到周六(点击不响应))
+				  int startPosition = calV.getStartPositon();
+				  int endPosition = calV.getEndPosition();
+				  if(startPosition <= position+7  && position <= endPosition-7){
+					  String scheduleDay = calV.getDateByClickItem(position).split("\\.")[0];  //这一天的阳历
+					  //String scheduleLunarDay = calV.getDateByClickItem(position).split("\\.")[1];  //这一天的阴历
+	                  String scheduleYear = calV.getShowYear();
+	                  String scheduleMonth = (Integer.valueOf(calV.getShowMonth())>10)?calV.getShowMonth():("0"+calV.getShowMonth());
+	                  scheduleDay = (Integer.valueOf(scheduleDay)>10)?scheduleDay:("0"+scheduleDay);
+	                  
+		              ruzhuTime=scheduleMonth+"月"+scheduleDay+"日";	                  
+	                  lidianTime=scheduleMonth+"月"+scheduleDay+"日";       
+	                  
+	                  selectDate = scheduleYear+scheduleMonth+scheduleDay;
+	                  
+					  initDayTask();
+	                }
+			}
 			
 		});
 	}
