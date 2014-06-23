@@ -13,6 +13,7 @@ import org.tang.exam.db.UserInfoDBAdapter;
 import org.tang.exam.entity.UserComparator;
 import org.tang.exam.entity.UserInfo;
 import org.tang.exam.utils.PushUtils;
+import org.tang.exam.view.BadgeView;
 import org.tang.exam.view.IndexableListView;
 
 import android.content.BroadcastReceiver;

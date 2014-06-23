@@ -11,6 +11,7 @@ import org.tang.exam.entity.UserInfo;
 import org.tang.exam.rest.ImageCacheManager;
 import org.tang.exam.utils.StringMatcher;
 import org.tang.exam.utils.URLChecker;
+import org.tang.exam.view.BadgeView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -60,6 +61,8 @@ public class UserListAdapter extends MyBaseAdatper implements Filterable, Sectio
 	private UserFilter mUserFilter = null;
 	private int mMode;
 	private Bundle bundle;
+	private BadgeView mBadge = null;
+	private Context context = null;
 	
 	public UserListAdapter(Context context, ArrayList<UserInfo> list) {
 		super();
@@ -77,6 +80,7 @@ public class UserListAdapter extends MyBaseAdatper implements Filterable, Sectio
 	public UserListAdapter(Context context, ArrayList<UserInfo> list, Bundle bundle, int mode) {
 		this(context, list,mode);
 		this.bundle = bundle;
+		this.context = context;
 	}
 
 	public void updateListData(ArrayList<UserInfo> list) {
@@ -164,7 +168,22 @@ public class UserListAdapter extends MyBaseAdatper implements Filterable, Sectio
 			
 			holder.tvUserName.setText(userInfo.getUserName());
 			holder.tvRemark.setText(UserHelper.getRemark(userInfo));
-			holder.tvUnReadCount.setText(bundle.getString(userInfo.getUserId()));
+			mBadge = new BadgeView(context, holder.tvUnReadCount);
+			mBadge.hide();
+			
+			String msg = bundle.getString(userInfo.getUserId());
+			
+			if(null!=msg && !"".equals(msg) &&!"0".equals(msg)){
+				Log.d(TAG, "bundle.getString(userInfo.getUserId())..."+bundle.getString(userInfo.getUserId()));
+				holder.tvUnReadCount.setText(bundle.getString(userInfo.getUserId()));
+				mBadge.setBadgeMargin(0);
+				mBadge.setText(bundle.getString(userInfo.getUserId()));
+				mBadge.show();
+			}
+			else{
+				mBadge.hide();
+			}
+			
 		}
 		
 		return convertView;
